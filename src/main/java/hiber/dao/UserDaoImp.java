@@ -18,27 +18,30 @@ public class UserDaoImp implements UserDao {
 
     @Override
     public void add(User user) {
-        if (user.getCar() == null) {
-            sessionFactory.getCurrentSession().save(user);
-        } else {
-            sessionFactory.getCurrentSession().save(user.getCar());
-            sessionFactory.getCurrentSession().save(user);
-        }
+        sessionFactory.getCurrentSession().save(user);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<User> listUsers() {
-        TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("from User");
+        TypedQuery<User> query = sessionFactory
+                .getCurrentSession()
+                .createQuery("from User as u inner join fetch u.car");
         return query.getResultList();
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+
     public User getUserByCar(Car car) {
 
-        TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("select u from User u "
-                                                                                + "where u.car.model = :name_model "
-                                                                                + "and u.car.series = :name_series");
+//        TypedQuery<User> query = sessionFactory.getCurrentSesecondssion().createQuery("select u from User u "
+//                                                                                + "where u.car.model = :name_model "
+//
+       TypedQuery<User> query = sessionFactory
+               .getCurrentSession()
+               .createQuery("from User u join fetch u.car where u.car.model = :name_model and  u.car.series = :name_series");
+
         query.setParameter("name_model", car.getModel());
         query.setParameter("name_series", car.getSeries());
 

@@ -1,5 +1,7 @@
 package hiber.model;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.*;
 
 @Entity
@@ -19,8 +21,8 @@ public class User {
    @Column(name = "email")
    private String email;
 
-   @OneToOne
-   @JoinColumn
+   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @JoinColumn(name = "car_id")
    private Car car;
 
    public User() {}
@@ -69,7 +71,6 @@ public class User {
    public void setEmail(String email) {
       this.email = email;
    }
-
    public Car getCar() {
       return car;
    }
