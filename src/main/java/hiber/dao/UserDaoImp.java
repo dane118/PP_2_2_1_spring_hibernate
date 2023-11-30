@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class UserDaoImp implements UserDao {
@@ -32,12 +33,7 @@ public class UserDaoImp implements UserDao {
 
     @Override
     @SuppressWarnings("unchecked")
-
-    public User getUserByCar(Car car) {
-
-//        TypedQuery<User> query = sessionFactory.getCurrentSesecondssion().createQuery("select u from User u "
-//                                                                                + "where u.car.model = :name_model "
-//
+    public Optional<User> getUserByCar(Car car) {
        TypedQuery<User> query = sessionFactory
                .getCurrentSession()
                .createQuery("from User u join fetch u.car where u.car.model = :name_model and  u.car.series = :name_series");
@@ -45,13 +41,10 @@ public class UserDaoImp implements UserDao {
         query.setParameter("name_model", car.getModel());
         query.setParameter("name_series", car.getSeries());
 
-        User singleResult;
         try {
-            singleResult = query.getSingleResult();
+            return Optional.ofNullable(query.getSingleResult());
         } catch (NoResultException e) {
-            return null;
+            return Optional.empty();
         }
-
-        return singleResult;
     }
 }
